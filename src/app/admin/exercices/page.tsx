@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { revalidatePath } from 'next/cache' // 👈 Import ajouté
+import { revalidateLessonPage } from '@/lib/actions' // 👈 Import de l'action serveur
 import { deleteExercise, getLessonWithExercises, updateExercise, uploadExercise, type Exercise } from '@/lib/supabase'
 import LessonPicker, { type Sel } from '@/components/LessonPicker'
 import Dropzone from '@/components/Dropzone'
@@ -34,8 +34,8 @@ export default function Page() {
         await uploadExercise({ lessonId: sel.lessonId, file: f, title: f.name.replace(/\.pdf$/i, ''), documentKind: kind, hasCorrection: withCorr })
         setLog(l => l.map((x, j) => j === i ? { ...x, state: 'Terminé' } : x))
         
-        // ✨ ON VIDE LE CACHE DE LA PAGE ÉLÈVE
-        revalidatePath('/lecon/[id]', 'page')
+        // ✨ Appel de l'action serveur
+        await revalidateLessonPage()
       } catch (e: any) { setLog(l => l.map((x, j) => j === i ? { ...x, state: 'Erreur : ' + (e.message ?? 'échec') } : x)) }
     }
     setBusy(false); load()
@@ -46,8 +46,8 @@ export default function Page() {
       setErr(''); 
       await fn(); 
       await load(); 
-      // ✨ ON VIDE LE CACHE APRÈS RENOMMAGE OU SUPPRESSION
-      revalidatePath('/lecon/[id]', 'page')
+      // ✨ Appel de l'action serveur
+      await revalidateLessonPage()
     } catch (e: any) { setErr(e.message) } 
   }
 

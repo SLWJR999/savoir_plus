@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { revalidatePath } from 'next/cache' // 👈 Import ajouté
+import { revalidateAnnalesPage } from '@/lib/actions' // 👈 Import de l'action serveur
 import { deleteExamPaper, getExamSessions, getSeriesByLevel, supabase, updateExamPaper, uploadExamPaper, type ExamPaper, type Series, type Subject } from '@/lib/supabase'
 import { getSubjects } from '@/lib/data'
 import Dropzone from '@/components/Dropzone'
@@ -42,8 +42,8 @@ export default function Page() {
     try { 
       setErr(''); 
       await fn(); 
-      // ✨ ON VIDE LE CACHE APRÈS ACTION
-      revalidatePath('/annales/[exam]/[matiere]', 'page')
+      // ✨ Appel de l'action serveur
+      await revalidateAnnalesPage()
     } catch (e: any) { setErr(e.message) } 
   }
   
@@ -63,8 +63,8 @@ export default function Page() {
         await uploadExamPaper({ sessionId, subjectId, seriesId: exam === 'bac' ? seriesId : null, paperKind: kind, title: f.name.replace(/\.pdf$/i, ''), file: f })
         setLog(l => [...l, `${f.name} — terminé`])
         
-        // ✨ ON VIDE LE CACHE DE LA PAGE ÉLÈVE
-        revalidatePath('/annales/[exam]/[matiere]', 'page')
+        // ✨ Appel de l'action serveur
+        await revalidateAnnalesPage()
       } catch (e: any) { setLog(l => [...l, `${f.name} — erreur : ${e.message}`]) }
     }
     setBusy(false); loadRows()
