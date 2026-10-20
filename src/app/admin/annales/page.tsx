@@ -1,5 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
+import { revalidatePath } from 'next/cache' // 👈 Import ajouté
 import { deleteExamPaper, getExamSessions, getSeriesByLevel, supabase, updateExamPaper, uploadExamPaper, type ExamPaper, type Series, type Subject } from '@/lib/supabase'
 import { getSubjects } from '@/lib/data'
 import Dropzone from '@/components/Dropzone'
@@ -37,7 +38,15 @@ export default function Page() {
   }, [sessionId])
   useEffect(() => { loadRows() }, [loadRows])
 
-  const run = async (fn: () => Promise<void>) => { try { setErr(''); await fn() } catch (e: any) { setErr(e.message) } }
+  const run = async (fn: () => Promise<void>) => { 
+    try { 
+      setErr(''); 
+      await fn(); 
+      // ✨ ON VIDE LE CACHE APRÈS ACTION
+      revalidatePath('/annales/[exam]/[matiere]', 'page')
+    } catch (e: any) { setErr(e.message) } 
+  }
+  
   const createSession = () => run(async () => {
     const { data, error } = await supabase.from('exam_types').select('id').eq('slug', exam).single()
     if (error) throw error
@@ -45,6 +54,7 @@ export default function Page() {
     if (r.error) throw new Error(r.error.code === '23505' ? 'Cette session existe déjà.' : r.error.message)
     await loadSessions(); setSessionId(r.data.id)
   })
+  
   async function upload(files: File[]) {
     if (!sessionId || !subjectId) return setErr('Choisis une session et une matière.')
     setBusy(true); setErr(''); setLog([])
@@ -52,6 +62,9 @@ export default function Page() {
       try {
         await uploadExamPaper({ sessionId, subjectId, seriesId: exam === 'bac' ? seriesId : null, paperKind: kind, title: f.name.replace(/\.pdf$/i, ''), file: f })
         setLog(l => [...l, `${f.name} — terminé`])
+        
+        // ✨ ON VIDE LE CACHE DE LA PAGE ÉLÈVE
+        revalidatePath('/annales/[exam]/[matiere]', 'page')
       } catch (e: any) { setLog(l => [...l, `${f.name} — erreur : ${e.message}`]) }
     }
     setBusy(false); loadRows()

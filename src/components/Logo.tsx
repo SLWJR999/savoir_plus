@@ -14,7 +14,7 @@ export function Logo({ light = false }: { light?: boolean }) {
           alt="Logo Savoir +" 
           width={64} 
           height={64} 
-          className="h-15 w-15 object-contain" 
+          className="h-25 w-25 object-contain" 
         />
       </span>
       
