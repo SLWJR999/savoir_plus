@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getSubjectsForProgram } from '@/lib/supabase'
 import { getProgramBySlug, getProgramSlugs } from '@/lib/data'
-import { Crumbs, Title, Empty, subjectColor } from '@/components/ui'
+import { Crumbs, Title, Empty, subjectTone } from '@/components/ui'
+
 export const revalidate = 60
 export async function generateStaticParams() { return (await getProgramSlugs()).map(slug => ({ slug })) }
 
@@ -17,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       <Title sub="Choisis une matière">{p.display_name}</Title>
       {subjects.length ? (
         <div className="grid gap-3 sm:grid-cols-3">
-          {subjects.map(s => <Link key={s.id} href={`/parcours/${slug}/${s.slug}`} className={`tile border-l-4 ${subjectColor[s.slug] ?? 'border-l-brand'}`}>{s.name}</Link>)}
+          {subjects.map(s => <Link key={s.id} href={`/parcours/${slug}/${s.slug}`} className={`tile border-l-4 ${subjectTone[s.slug] ?? 'border-l-brand'}`}>{s.name}</Link>)}
         </div>
       ) : <Empty>Aucune matière pour cette classe.</Empty>}
     </div>
