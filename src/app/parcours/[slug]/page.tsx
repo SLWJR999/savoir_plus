@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getSubjectsForProgram } from '@/lib/supabase'
-import { getProgramBySlug } from '@/lib/data'
+import { getProgramBySlug, getProgramSlugs } from '@/lib/data'
 import { Crumbs, Title, Empty, subjectColor } from '@/components/ui'
 export const revalidate = 60
+export async function generateStaticParams() { return (await getProgramSlugs()).map(slug => ({ slug })) }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

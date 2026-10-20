@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getGradesByLevel, getClassPrograms } from '@/lib/supabase'
 import { Crumbs, Title, Empty } from '@/components/ui'
 export const revalidate = 60
+export function generateStaticParams() { return [{ level: 'college' }, { level: 'lycee' }] }
 
 export default async function Page({ params }: { params: Promise<{ level: string }> }) {
   const { level } = await params

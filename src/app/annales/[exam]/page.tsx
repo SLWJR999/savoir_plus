@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getSubjects } from '@/lib/data'
 import { Crumbs, Title, subjectColor } from '@/components/ui'
 export const revalidate = 60
+export function generateStaticParams() { return [{ exam: 'bfem' }, { exam: 'bac' }] }
 
 export default async function Page({ params }: { params: Promise<{ exam: string }> }) {
   const { exam } = await params

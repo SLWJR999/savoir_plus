@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation'
 import { getExamPapers } from '@/lib/supabase'
+import { getSubjectSlugs } from '@/lib/data'
 import { Crumbs, Title, Empty } from '@/components/ui'
 import PdfRow from '@/components/PdfRow'
 export const revalidate = 60
+export async function generateStaticParams() {
+  const subjects = await getSubjectSlugs()
+  return ['bfem', 'bac'].flatMap(exam => subjects.map(matiere => ({ exam, matiere })))
+}
 
 const kinds: Record<string, string> = { sujet: 'Sujet', corrige: 'Corrigé', bareme: 'Barème', autre: 'Autre' }
 

@@ -32,3 +32,20 @@ export async function deleteLessonCompletely(lessonId: string) {
   const del = await supabase.from('lessons').delete().eq('id', lessonId)
   if (del.error) throw del.error
 }
+
+// ---- Pré-génération des pages au build (generateStaticParams) ----
+// Ne doit jamais faire échouer le build : en cas d'erreur on renvoie [] et les pages se génèrent à la demande.
+export async function getProgramSlugs(): Promise<string[]> {
+  try { return (await getAllPrograms()).map(p => p.slug) } catch { return [] }
+}
+export async function getProgramSubjectPairs(): Promise<{ slug: string; matiere: string }[]> {
+  try {
+    const { data, error } = await supabase.from('program_subjects').select('class_programs!inner(slug, active), subjects!inner(slug, active)')
+    if (error) throw error
+    const rows = data as unknown as { class_programs: { slug: string; active: boolean }; subjects: { slug: string; active: boolean } }[]
+    return rows.filter(r => r.class_programs.active && r.subjects.active).map(r => ({ slug: r.class_programs.slug, matiere: r.subjects.slug }))
+  } catch { return [] }
+}
+export async function getSubjectSlugs(): Promise<string[]> {
+  try { return (await getSubjects()).map(s => s.slug) } catch { return [] }
+}
