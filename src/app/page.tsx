@@ -25,24 +25,27 @@ export default function Home() {
           </div>
         </div>
         
-        {/* Nouvelle illustration : Documents et livre ouvert */}
-        <div className="mx-auto mt-6 w-32 sm:w-48 md:mt-0 md:w-full md:max-w-[18rem]" aria-hidden="true">
-          <svg viewBox="0 0 200 200" className="h-auto w-full drop-shadow-md">
-            {/* Document arrière-plan */}
-            <rect x="40" y="30" width="100" height="120" rx="8" fill="#B98F3F" opacity="0.2" transform="rotate(-10 90 90)" />
-            {/* Document principal */}
-            <rect x="55" y="45" width="110" height="130" rx="8" fill="#fff" stroke="#e5e5e5" strokeWidth="2" />
-            <path d="M 75 70 H 140 M 75 90 H 120 M 75 110 H 135" stroke="#d4d4d4" strokeWidth="4" strokeLinecap="round" />
-            {/* Étiquette PDF rouge */}
-            <rect x="65" y="135" width="40" height="20" rx="4" fill="#B3202A" />
-            <text x="85" y="149" fill="#fff" fontSize="11" fontWeight="bold" textAnchor="middle">PDF</text>
+        {/* Nouvelle illustration : Cachée sur mobile (hidden md:block) */}
+        <div className="hidden md:block mx-auto md:mt-0 md:w-full md:max-w-[16rem]" aria-hidden="true">
+          <svg viewBox="0 0 200 200" className="h-auto w-full drop-shadow-sm">
+            {/* Fond décoratif */}
+            <circle cx="100" cy="100" r="90" fill="#F8F4EA" />
             
-            {/* Livre ouvert au premier plan */}
-            <path d="M 90 160 L 40 180 L 40 155 L 90 135 Z" fill="#B3202A" />
-            <path d="M 90 160 L 140 180 L 140 155 L 90 135 Z" fill="#8A1820" />
-            <path d="M 90 135 V 160" stroke="#fff" strokeWidth="2" />
-            {/* Lignes du livre */}
-            <path d="M 55 165 H 80 M 100 165 H 125" stroke="#fff" strokeOpacity="0.4" strokeWidth="2" strokeLinecap="round" />
+            {/* Livre ouvert */}
+            <path d="M 40 80 Q 70 70 100 90 Q 130 70 160 80 L 160 150 Q 130 140 100 160 Q 70 140 40 150 Z" fill="#B3202A" />
+            <path d="M 100 90 L 100 160" stroke="#8A1820" strokeWidth="4" />
+            
+            {/* Pages du livre */}
+            <path d="M 45 85 Q 70 75 95 92 L 95 150 Q 70 133 45 143 Z" fill="#fff" opacity="0.9" />
+            <path d="M 155 85 Q 130 75 105 92 L 105 150 Q 130 133 155 143 Z" fill="#fff" opacity="0.9" />
+            
+            {/* Lignes de texte sur les pages */}
+            <path d="M 55 100 H 85 M 55 110 H 80 M 55 120 H 85" stroke="#B3202A" strokeOpacity="0.4" strokeWidth="2" strokeLinecap="round" />
+            <path d="M 115 100 H 145 M 115 110 H 140 M 115 120 H 145" stroke="#B3202A" strokeOpacity="0.4" strokeWidth="2" strokeLinecap="round" />
+            
+            {/* Symbole de téléchargement / PDF flottant */}
+            <circle cx="150" cy="60" r="24" fill="#B98F3F" />
+            <path d="M 150 48 v 16 m 0 0 l -6 -6 m 6 6 l 6 -6 M 138 68 h 24" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
         </div>
       </section>
