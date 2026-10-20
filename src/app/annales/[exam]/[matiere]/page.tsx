@@ -3,7 +3,10 @@ import { getExamPapers } from '@/lib/supabase'
 import { getSubjectSlugs } from '@/lib/data'
 import { Crumbs, Title, Empty } from '@/components/ui'
 import PdfRow from '@/components/PdfRow'
+import RefreshButton from '@/components/RefreshButton' // 👈 Import ajouté
+
 export const revalidate = 60
+
 export async function generateStaticParams() {
   const subjects = await getSubjectSlugs()
   return ['bfem', 'bac'].flatMap(exam => subjects.map(matiere => ({ exam, matiere })))
@@ -25,8 +28,14 @@ export default async function Page({ params }: { params: Promise<{ exam: string;
   const list = [...groups.values()].sort((a, b) => b.year - a.year || a.label.localeCompare(b.label))
   return (
     <div>
-      <Crumbs items={[{ href: '/', label: 'Accueil' }, { href: `/annales/${exam}`, label: `Annales ${name}` }, { label: papers[0]?.subjects.name ?? matiere }]} />
+      <div className="flex items-start justify-between gap-4">
+        <Crumbs items={[{ href: '/', label: 'Accueil' }, { href: `/annales/${exam}`, label: `Annales ${name}` }, { label: papers[0]?.subjects.name ?? matiere }]} />
+        {/* 👈 Le bouton est placé ici */}
+        <RefreshButton />
+      </div>
+
       <Title>{`${name} · ${papers[0]?.subjects.name ?? matiere}`}</Title>
+      
       {list.length ? (
         <div className="space-y-6">
           {list.map(g => (

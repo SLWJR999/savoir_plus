@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { getLessons } from '@/lib/supabase'
 import { getProgramBySlug, getProgramSubjectPairs } from '@/lib/data'
 import { Crumbs, Title, Empty } from '@/components/ui'
+import RefreshButton from '@/components/RefreshButton' // 👈 Import ajouté
+
 export const revalidate = 60
 export async function generateStaticParams() { return await getProgramSubjectPairs() }
 
@@ -11,10 +13,17 @@ export default async function Page({ params }: { params: Promise<{ slug: string;
   const p = await getProgramBySlug(slug)
   if (!p) notFound()
   const { subject, lessons } = await getLessons(p.id, matiere).catch(() => notFound())
+  
   return (
     <div>
-      <Crumbs items={[{ href: '/', label: 'Accueil' }, { href: `/niveau/${p.grades.levels.slug}`, label: p.grades.levels.name }, { href: `/parcours/${slug}`, label: p.display_name }, { label: subject.name }]} />
+      <div className="flex items-start justify-between gap-4">
+        <Crumbs items={[{ href: '/', label: 'Accueil' }, { href: `/niveau/${p.grades.levels.slug}`, label: p.grades.levels.name }, { href: `/parcours/${slug}`, label: p.display_name }, { label: subject.name }]} />
+        {/* 👈 Bouton ajouté ici */}
+        <RefreshButton />
+      </div>
+
       <Title sub={`${p.display_name} · ${lessons.length} leçon${lessons.length > 1 ? 's' : ''}`}>{subject.name}</Title>
+      
       {lessons.length ? (
         <ul className="space-y-2">
           {lessons.map(l => (
