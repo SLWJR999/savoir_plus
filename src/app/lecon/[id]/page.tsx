@@ -9,7 +9,7 @@ const kinds: Record<string, string> = { exercice: 'Exercices', corrige: 'Corrig�
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
-  const r = await getLessonWithExercises(id).catch(() => null)
+  const r = await getLessonWithExercises(id) // une vraie erreur réseau/base ne doit pas devenir un 404
   if (!r) notFound()
   const { lesson, exercises } = r as any
   const prog = lesson.class_programs, subj = lesson.subjects
@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
               badges={[kinds[e.document_kind], ...(e.has_correction && e.document_kind !== 'corrige' ? ['Avec corrigé'] : [])]} />
           ))}
         </ul>
-      ) : <Empty>Les exercices de cette leçon seront bientôt disponibles.</Empty>}
+      ) : <Empty>Cette leçon n’a pas encore d’exercices. Reviens plus tard, ils seront bientôt disponibles !</Empty>}
     </div>
   )
 }

@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string;
             <li key={l.id}>
               <Link href={`/lecon/${l.id}`} className="tile flex items-center justify-between gap-3">
                 <span>{l.title}</span>
-                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{l.exercises_count} PDF</span>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{l.exercises_count > 0 ? `${l.exercises_count} PDF` : 'Bientôt'}</span>
               </Link>
             </li>
           ))}

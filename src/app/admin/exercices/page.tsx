@@ -19,7 +19,7 @@ export default function Page() {
 
   const load = useCallback(async () => {
     if (!sel.lessonId) return setItems([])
-    try { setItems((await getLessonWithExercises(sel.lessonId)).exercises) } catch (e: any) { setErr(e.message) }
+    try { setItems((await getLessonWithExercises(sel.lessonId))?.exercises ?? []) } catch (e: any) { setErr(e.message) }
   }, [sel.lessonId])
   useEffect(() => { load() }, [load])
 

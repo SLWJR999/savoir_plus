@@ -62,10 +62,20 @@ export async function getLessons(programId: string, subjectSlug: string) {
 }
 
 export async function getLessonWithExercises(lessonId: string) {
-  const lessonResult = await supabase.from('lessons').select('*, class_programs(display_name, slug, grades(name, slug), series(name, slug)), subjects(name, slug)').eq('id', lessonId).single()
-  const lesson = throwIfError(lessonResult)
-  const exercisesResult = await supabase.from('exercises').select('*').eq('lesson_id', lessonId).order('created_at', { ascending: false })
-  return { lesson, exercises: throwIfError(exercisesResult) as Exercise[] }
+  // Pas de jointure imbriquée : lessons n'a pas de clé étrangère directe vers class_programs/subjects
+  // (la FK est composite vers program_subjects), PostgREST ne peut donc pas les relier en une requête.
+  const lessonResult = await supabase.from('lessons').select('*').eq('id', lessonId).maybeSingle()
+  const lesson = throwIfError(lessonResult) as Lesson | null
+  if (!lesson) return null
+  const [progResult, subjResult, exResult] = await Promise.all([
+    supabase.from('class_programs').select('display_name, slug, grades(name, slug), series(name, slug)').eq('id', lesson.program_id).single(),
+    supabase.from('subjects').select('name, slug').eq('id', lesson.subject_id).single(),
+    supabase.from('exercises').select('*').eq('lesson_id', lessonId).order('created_at', { ascending: false }),
+  ])
+  return {
+    lesson: { ...lesson, class_programs: throwIfError(progResult), subjects: throwIfError(subjResult) } as any,
+    exercises: throwIfError(exResult) as Exercise[],
+  }
 }
 
 // ------------------------------ ANNALES ---------------------------------
