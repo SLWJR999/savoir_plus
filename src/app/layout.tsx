@@ -1,9 +1,11 @@
+// @ts-ignore Next.js handles this global stylesheet import.
 import './globals.css'
 import Link from 'next/link'
 import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Figtree } from 'next/font/google'
 import PwaRegister from '@/components/PwaRegister'
 import { DesktopNav, TabBar } from '@/components/Nav'
+import { Logo } from '@/components/Logo'   // ← import ajouté
 
 const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display', display: 'swap' })
 const body = Figtree({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
@@ -15,16 +17,7 @@ export const metadata: Metadata = {
 }
 export const viewport: Viewport = { themeColor: '#B3202A', width: 'device-width', initialScale: 1 }
 
-export function Logo({ light = false }: { light?: boolean }) {
-  return (
-    <span className="flex items-center gap-2.5">
-      <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-white shadow-sm ring-2 ring-gold/60">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-      </span>
-      <span className={`font-display text-xl font-extrabold tracking-tight ${light ? 'text-white' : 'text-ink'}`}>Savoir +</span>
-    </span>
-  )
-}
+// ❌ Logo supprimé d'ici
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -40,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-16">{children}</main>
         <footer className="mb-[60px] border-t-4 border-gold bg-ink text-white md:mb-0">
           <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <Logo light />
+            <Logo light />   {/* ← fonctionne toujours */}
             <p className="max-w-xs text-sm text-white/70">Exercices, corrigés et annales du BFEM et du BAC, gratuits et sans compte.</p>
           </div>
         </footer>
