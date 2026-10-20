@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { getLessons } from '@/lib/supabase'
 import { getProgramBySlug, getProgramSubjectPairs } from '@/lib/data'
 import { Crumbs, Title, Empty } from '@/components/ui'
-import RefreshButton from '@/components/RefreshButton' // 👈 Import ajouté
+import RefreshButton from '@/components/RefreshButton'
 
 export const revalidate = 60
 export async function generateStaticParams() { return await getProgramSubjectPairs() }
@@ -16,10 +16,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string;
   
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Crumbs items={[{ href: '/', label: 'Accueil' }, { href: `/niveau/${p.grades.levels.slug}`, label: p.grades.levels.name }, { href: `/parcours/${slug}`, label: p.display_name }, { label: subject.name }]} />
-        {/* 👈 Bouton ajouté ici */}
-        <RefreshButton />
+        {/* 👈 Bouton placé ici */}
+        <div className="self-start sm:self-auto">
+          <RefreshButton />
+        </div>
       </div>
 
       <Title sub={`${p.display_name} · ${lessons.length} leçon${lessons.length > 1 ? 's' : ''}`}>{subject.name}</Title>
